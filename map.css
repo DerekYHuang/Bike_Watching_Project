@@ -8,6 +8,36 @@ body {
   flex-direction: column;
 }
 
+header {
+  display: flex;
+  gap: 1em;
+  align-items: baseline;
+  padding: 0.5em 0;
+}
+
+header label {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5em;
+}
+
+#selected-time,
+#any-time {
+  display: block;
+  min-height: 1.2em;
+}
+
+#any-time {
+  font-style: italic;
+  color: #666;
+}
+
+#time-slider {
+  width: 200px;
+}
+
 #map {
   width: 100%;
   flex: 1; /* Makes the map take remaining space */
@@ -23,4 +53,10 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none; /* Allow map interaction through SVG */
+}
+
+/* Enable tooltips on circles */
+#map svg circle {
+  pointer-events: auto; /* Allow hover events on circles */
+  cursor: pointer; /* Show pointer cursor on hover */
 }

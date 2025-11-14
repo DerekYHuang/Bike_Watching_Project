@@ -20,8 +20,19 @@
     <script src="map.js" type="module"></script>
   </head>
   <body>
-    <h1>🚴🏼‍♀️ Bikewatching</h1>
-    <p>An immersive, interactive map visualization of bike traffic in the Boston area during different times of the day.</p>
+    <header>
+      <div>
+        <h1>🚴🏼‍♀️ Bikewatching</h1>
+        <p>An immersive, interactive map visualization of bike traffic in the Boston area during different times of the day.</p>
+      </div>
+      
+      <label for="time-slider">
+        Filter by time:
+        <time id="selected-time"></time>
+        <em id="any-time">(any time)</em>
+        <input type="range" id="time-slider" min="-1" max="1440" value="-1" />
+      </label>
+    </header>
     
     <!-- Map container with SVG overlay -->
     <div id="map">

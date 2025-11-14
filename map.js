@@ -1,6 +1,9 @@
 // Import Mapbox as an ESM module
 import mapboxgl from 'https://cdn.jsdelivr.net/npm/mapbox-gl@2.15.0/+esm';
 
+// Import D3 as an ES module
+import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
+
 // Check that Mapbox GL JS is loaded
 console.log('Mapbox GL JS Loaded:', mapboxgl);
 
@@ -20,9 +23,16 @@ const map = new mapboxgl.Map({
 // Define bike lane styling (so we can reuse it for both cities)
 const bikeLaneStyle = {
   'line-color': '#32D400', // Bright green
-  'line-width': 2.5,
+  'line-width': 3,
   'line-opacity': 0.5,
 };
+
+// Helper function to convert coordinates (defined globally)
+function getCoords(station) {
+  const point = new mapboxgl.LngLat(+station.lon, +station.lat); // Convert lon/lat to Mapbox LngLat
+  const { x, y } = map.project(point); // Project to pixel coordinates
+  return { cx: x, cy: y }; // Return as object for use in SVG attributes
+}
 
 // Wait for the map to load before adding data
 map.on('load', async () => {
@@ -55,4 +65,55 @@ map.on('load', async () => {
   });
 
   console.log('Bike lanes added successfully!');
+
+  // Load Bluebikes station data
+  let jsonData;
+  try {
+    const jsonurl = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
+
+    // Await JSON fetch
+    jsonData = await d3.json(jsonurl);
+
+    console.log('Loaded JSON Data:', jsonData); // Log to verify structure
+  } catch (error) {
+    console.error('Error loading JSON:', error); // Handle errors
+    return;
+  }
+
+  // Access the stations array
+  let stations = jsonData.data.stations;
+  console.log('Stations Array:', stations);
+
+  // Select the SVG element inside the map container
+  const svg = d3.select('#map').select('svg');
+
+  // Append circles to the SVG for each station
+  const circles = svg
+    .selectAll('circle')
+    .data(stations)
+    .enter()
+    .append('circle')
+    .attr('r', 5) // Radius of the circle
+    .attr('fill', 'steelblue') // Circle fill color
+    .attr('stroke', 'white') // Circle border color
+    .attr('stroke-width', 1) // Circle border thickness
+    .attr('opacity', 0.8); // Circle opacity
+
+  // Function to update circle positions when the map moves/zooms
+  function updatePositions() {
+    circles
+      .attr('cx', (d) => getCoords(d).cx) // Set the x-position using projected coordinates
+      .attr('cy', (d) => getCoords(d).cy); // Set the y-position using projected coordinates
+  }
+
+  // Initial position update when map loads
+  updatePositions();
+
+  // Reposition markers on map interactions
+  map.on('move', updatePositions); // Update during map movement
+  map.on('zoom', updatePositions); // Update during zooming
+  map.on('resize', updatePositions); // Update on window resize
+  map.on('moveend', updatePositions); // Final adjustment after movement ends
+
+  console.log('Bike stations added successfully!');
 });

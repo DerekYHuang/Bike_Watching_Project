@@ -31,6 +31,9 @@ const bikeLaneStyle = {
 let departuresByMinute = Array.from({ length: 1440 }, () => []);
 let arrivalsByMinute = Array.from({ length: 1440 }, () => []);
 
+// Quantize scale for traffic flow (departures vs arrivals)
+let stationFlow = d3.scaleQuantize().domain([0, 1]).range([0, 0.5, 1]);
+
 // Helper function to convert coordinates (defined globally)
 function getCoords(station) {
   const point = new mapboxgl.LngLat(+station.lon, +station.lat);
@@ -180,10 +183,12 @@ map.on('load', async () => {
     .enter()
     .append('circle')
     .attr('r', (d) => radiusScale(d.totalTraffic))
-    .attr('fill', 'steelblue')
     .attr('stroke', 'white')
     .attr('stroke-width', 1)
     .attr('fill-opacity', 0.6)
+    .style('--departure-ratio', (d) =>
+      stationFlow(d.departures / d.totalTraffic),
+    )
     .each(function (d) {
       d3.select(this)
         .append('title')
@@ -228,6 +233,9 @@ map.on('load', async () => {
       .data(filteredStations, (d) => d.short_name)
       .join('circle')
       .attr('r', (d) => radiusScale(d.totalTraffic))
+      .style('--departure-ratio', (d) =>
+        stationFlow(d.departures / d.totalTraffic),
+      )
       .each(function (d) {
         // Update tooltips
         d3.select(this)

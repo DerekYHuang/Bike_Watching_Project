@@ -55,8 +55,51 @@ header label {
   pointer-events: none; /* Allow map interaction through SVG */
 }
 
+/* Color mixing for circles and legend */
+#map svg circle,
+.legend > div {
+  --color-departures: steelblue;
+  --color-arrivals: darkorange;
+  --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+  );
+}
+
 /* Enable tooltips on circles */
 #map svg circle {
   pointer-events: auto; /* Allow hover events on circles */
   cursor: pointer; /* Show pointer cursor on hover */
+  fill: var(--color);
+}
+
+/* Legend styling */
+.legend {
+  display: flex;
+  gap: 1px;
+  margin-block: 1em;
+}
+
+.legend > div {
+  flex: 1;
+  background: var(--color);
+  color: white;
+  padding: 0.8em 2em;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.legend > div:first-child {
+  text-align: left;
+  border-radius: 4px 0 0 4px;
+}
+
+.legend > div:nth-child(2) {
+  text-align: center;
+}
+
+.legend > div:last-child {
+  text-align: right;
+  border-radius: 0 4px 4px 0;
 }

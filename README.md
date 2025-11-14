@@ -1,9 +1,3 @@
-# 🚴‍♀️ Bikewatching
-
-An immersive, interactive map visualization that analyzes bike-sharing patterns across Boston and Cambridge using real-time BlueBikes data.
-
-![Bikewatching Screenshot](assets/screenshot.png)
-
 ## 🌟 Project Overview
 
 Bikewatching transforms over 260,000 trip records from March 2024 into an interactive geospatial visualization that reveals hidden patterns in urban bike-sharing behavior. By combining temporal filtering with traffic flow analysis, this project uncovers how commuter patterns shift dramatically between morning and evening rush hours.
